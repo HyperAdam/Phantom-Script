@@ -1,0 +1,102 @@
+--Made by HyperAdam#2925
+
+
+-- Instances:
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local TextLabel_2 = Instance.new("TextLabel")
+local TextButton = Instance.new("TextButton")
+
+--Properties:
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Frame.Position = UDim2.new(0.0147058824, 0, 0.55438602, 0)
+Frame.Size = UDim2.new(0, 210, 0, 128)
+Frame.Active = true
+Frame.Draggable = true
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.Size = UDim2.new(0, 210, 0, 23)
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.Text = "Phantom Forces Silent Aim"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 14.000
+
+TextLabel_2.Parent = Frame
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+TextLabel_2.Position = UDim2.new(0, 0, 0.8203125, 0)
+TextLabel_2.Size = UDim2.new(0, 210, 0, 23)
+TextLabel_2.Font = Enum.Font.SourceSans
+TextLabel_2.Text = "Made by: HyperAdam#2925"
+TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.TextSize = 14.000
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+TextButton.Position = UDim2.new(0.261904776, 0, 0.3046875, 0)
+TextButton.Size = UDim2.new(0, 100, 0, 50)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Execute Silent Aim"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextSize = 14.000
+TextButton.TextStrokeColor3 = Color3.fromRGB(85, 0, 0)
+TextButton.MouseButton1Down:connect(function()
+	local Players = game:GetService("Players")
+	local Camera = workspace.CurrentCamera
+	local LocalPlayer = Players.LocalPlayer
+	local Mouse = LocalPlayer:GetMouse()
+	local GameLogic, CharTable, Trajectory
+	for I,V in pairs(getgc(true)) do
+		if type(V) == "table" then
+			if rawget(V, "gammo") then
+				GameLogic = V
+			end
+		elseif type(V) == "function" then
+			if debug.getinfo(V).name == "getbodyparts" then
+				CharTable = debug.getupvalue(V, 1)
+			elseif debug.getinfo(V).name == "trajectory" then
+				Trajectory = V
+			end
+		end
+		if GameLogic and CharTable and Trajectory then break end
+	end
+
+	local function Closest()
+		local Max, Close = math.huge
+		for I,V in pairs(Players:GetPlayers()) do
+			if V ~= LocalPlayer and V.Team ~= LocalPlayer.Team and CharTable[V] then
+				local Pos, OnScreen = Camera:WorldToScreenPoint(CharTable[V].head.Position)
+				if OnScreen then
+					local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+					if Dist < Max then
+						Max = Dist
+						Close = V
+					end
+				end
+			end
+		end
+		return Close
+	end
+	local MT = getrawmetatable(game)
+	local __index = MT.__index
+	setreadonly(MT, false)
+	MT.__index = newcclosure(function(self, K)
+		if not checkcaller() and GameLogic.currentgun and GameLogic.currentgun.data and (self == GameLogic.currentgun.barrel or tostring(self) == "SightMark") and K == "CFrame" then
+			local CharChosen = (CharTable[Closest()] and CharTable[Closest()].head)
+			if CharChosen then
+				local _, Time = Trajectory(self.Position, Vector3.new(0, -workspace.Gravity, 0), CharChosen.Position, GameLogic.currentgun.data.bulletspeed)
+				return CFrame.new(self.Position, CharChosen.Position + (Vector3.new(0, -workspace.Gravity / 2, 0)) * (Time ^ 2) + (CharChosen.Velocity * Time))
+			end
+		end
+		return __index(self, K)
+	end)
+	setreadonly(MT, true)
+end)
