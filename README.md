@@ -1,1 +1,2 @@
-Let the game load, inject synapse and execute. Click "execute silent aim" on the gui and you can drag it out of the way. Combine with esp and have fun :)
+Completely changed the old Gui, made new one with tabs but i will polish it soon
+Let the game load, inject synapse then execute the script. Comes with esp now. Enjoy :)
