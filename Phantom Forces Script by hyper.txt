@@ -1,0 +1,431 @@
+--Made by HyperAdam#2925, Phantom Forces Revamped Script. Complete change from original.
+-- Instances:
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local TextLabel_2 = Instance.new("TextLabel")
+local SilentAim = Instance.new("TextButton")
+local Esp = Instance.new("TextButton")
+local Help = Instance.new("TextButton")
+local SilentAimTab = Instance.new("Frame")
+local SilentAimButton = Instance.new("TextButton")
+local EspTab = Instance.new("Frame")
+local EspButton = Instance.new("TextButton")
+local HelpTab = Instance.new("Frame")
+local HelpText = Instance.new("TextLabel")
+local HelpText2 = Instance.new("TextLabel")
+
+--Properties:
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
+
+MainFrame.Name = "Main Frame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.Position = UDim2.new(0.0819061846, 0, 0.231578916, 0)
+MainFrame.Size = UDim2.new(0, 348, 0, 211)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+TextLabel.Parent = MainFrame
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.Position = UDim2.new(-0.000252471567, 0, 0, 0)
+TextLabel.Size = UDim2.new(0, 348, 0, 45)
+TextLabel.Font = Enum.Font.Roboto
+TextLabel.Text = "Phantom Forces Script"
+TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.TextSize = 38.000
+
+TextLabel_2.Parent = MainFrame
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_2.Position = UDim2.new(0, 0, 0.879088759, 0)
+TextLabel_2.Size = UDim2.new(0, 348, 0, 25)
+TextLabel_2.Font = Enum.Font.RobotoMono
+TextLabel_2.Text = "Made By HyperAdam#2925"
+TextLabel_2.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_2.TextSize = 24.000
+
+SilentAim.Name = "SilentAim"
+SilentAim.Parent = MainFrame
+SilentAim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SilentAim.Position = UDim2.new(-0.000252471567, 0, 0.218009472, 0)
+SilentAim.Size = UDim2.new(0, 105, 0, 48)
+SilentAim.Font = Enum.Font.Roboto
+SilentAim.Text = "Silent Aim"
+SilentAim.TextColor3 = Color3.fromRGB(0, 0, 0)
+SilentAim.TextSize = 25.000
+
+Esp.Name = "Esp"
+Esp.Parent = MainFrame
+Esp.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Esp.Position = UDim2.new(-0.000252471567, 0, 0.445497632, 0)
+Esp.Size = UDim2.new(0, 105, 0, 49)
+Esp.Font = Enum.Font.Roboto
+Esp.Text = "Esp"
+Esp.TextColor3 = Color3.fromRGB(0, 0, 0)
+Esp.TextSize = 25.000
+
+Help.Name = "Help"
+Help.Parent = MainFrame
+Help.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Help.Position = UDim2.new(0, 0, 0.677725136, 0)
+Help.Size = UDim2.new(0, 105, 0, 41)
+Help.Font = Enum.Font.Roboto
+Help.Text = "Help"
+Help.TextColor3 = Color3.fromRGB(0, 0, 0)
+Help.TextSize = 25.000
+
+SilentAimTab.Name = "SilentAimTab"
+SilentAimTab.Parent = MainFrame
+SilentAimTab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SilentAimTab.BackgroundTransparency = 1.000
+SilentAimTab.Position = UDim2.new(0.298850566, 0, 0.218009472, 0)
+SilentAimTab.Size = UDim2.new(0, 244, 0, 138)
+
+SilentAimButton.Name = "SilentAimButton"
+SilentAimButton.Parent = SilentAimTab
+SilentAimButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SilentAimButton.Position = UDim2.new(0.114754096, 0, 0.173913047, 0)
+SilentAimButton.Size = UDim2.new(0, 186, 0, 96)
+SilentAimButton.Font = Enum.Font.Roboto
+SilentAimButton.Text = "Execute Silent Aim"
+SilentAimButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+SilentAimButton.TextSize = 25.000
+SilentAimButton.MouseButton1Down:connect(function()
+	local Players = game:GetService("Players")
+	local Camera = workspace.CurrentCamera
+	local LocalPlayer = Players.LocalPlayer
+	local Mouse = LocalPlayer:GetMouse()
+	local GameLogic, CharTable, Trajectory
+	for I,V in pairs(getgc(true)) do
+		if type(V) == "table" then
+			if rawget(V, "gammo") then
+				GameLogic = V
+			end
+		elseif type(V) == "function" then
+			if debug.getinfo(V).name == "getbodyparts" then
+				CharTable = debug.getupvalue(V, 1)
+			elseif debug.getinfo(V).name == "trajectory" then
+				Trajectory = V
+			end
+		end
+		if GameLogic and CharTable and Trajectory then break end
+	end
+
+	local function Closest()
+		local Max, Close = math.huge
+		for I,V in pairs(Players:GetPlayers()) do
+			if V ~= LocalPlayer and V.Team ~= LocalPlayer.Team and CharTable[V] then
+				local Pos, OnScreen = Camera:WorldToScreenPoint(CharTable[V].head.Position)
+				if OnScreen then
+					local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+					if Dist < Max then
+						Max = Dist
+						Close = V
+					end
+				end
+			end
+		end
+		return Close
+	end
+	local MT = getrawmetatable(game)
+	local __index = MT.__index
+	setreadonly(MT, false)
+	MT.__index = newcclosure(function(self, K)
+		if not checkcaller() and GameLogic.currentgun and GameLogic.currentgun.data and (self == GameLogic.currentgun.barrel or tostring(self) == "SightMark") and K == "CFrame" then
+			local CharChosen = (CharTable[Closest()] and CharTable[Closest()].head)
+			if CharChosen then
+				local _, Time = Trajectory(self.Position, Vector3.new(0, -workspace.Gravity, 0), CharChosen.Position, GameLogic.currentgun.data.bulletspeed)
+				return CFrame.new(self.Position, CharChosen.Position + (Vector3.new(0, -workspace.Gravity / 2, 0)) * (Time ^ 2) + (CharChosen.Velocity * Time))
+			end
+		end
+		return __index(self, K)
+	end)
+	setreadonly(MT, true)
+end)
+
+EspTab.Name = "EspTab"
+EspTab.Parent = MainFrame
+EspTab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+EspTab.BackgroundTransparency = 1.000
+EspTab.Position = UDim2.new(0.298850566, 0, 0.218009472, 0)
+EspTab.Size = UDim2.new(0, 244, 0, 138)
+
+EspButton.Name = "EspButton"
+EspButton.Parent = EspTab
+EspButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+EspButton.Position = UDim2.new(0.114754021, 0, 0.173913047, 0)
+EspButton.Size = UDim2.new(0, 186, 0, 96)
+EspButton.Font = Enum.Font.Roboto
+EspButton.Text = "Execute Esp"
+EspButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+EspButton.TextSize = 25.000
+EspButton.MouseButton1Down:connect(function()
+	local client = {}; do
+		-- Tables
+		client.esp = {}
+
+		-- Modules
+		for i,v in pairs(getgc(true)) do
+			if (type(v) == "table") then
+				if (rawget(v, "getplayerhealth")) then
+					client.hud = v
+				elseif (rawget(v, "getplayerhit")) then
+					client.replication = v
+				end
+			end
+		end
+
+		client.chartable = debug.getupvalue(client.replication.getbodyparts, 1)
+	end
+
+	client.esp.Options = {
+		Enable = true,
+		TeamCheck = true,
+		TeamColor = false,
+		VisibleOnly = false,
+		Color = Color3.fromRGB(255, 0, 255),
+		Name = true,
+		Box = true,
+		Health = true,
+		Distance = true,
+		Tracer = false
+	}
+
+	client.esp.Services = setmetatable({}, {
+		__index = function(Self, Index)
+			local GetService = game.GetService
+			local Service = GetService(game, Index)
+
+			if Service then
+				Self[Index] = Service
+			end
+
+			return Service
+		end
+	})
+
+	local function GetDrawingObjects()
+		return {
+			Name = Drawing.new("Text"),
+			Box = Drawing.new("Quad"),
+			Tracer = Drawing.new("Line"),
+		}
+	end
+
+	local function CreateEsp(Player)
+		local Objects = GetDrawingObjects()
+		local Character = client.chartable[Player].head.Parent
+		local Head = Character.Head
+		local HeadPosition = Head.Position
+		local Head2dPosition, OnScreen = workspace.CurrentCamera:WorldToScreenPoint(HeadPosition)
+		local Origin = workspace.CurrentCamera.CFrame.p
+		local HeadPos = Head.Position
+		local IgnoreList = { Character, client.esp.Services.Players.LocalPlayer.Character, workspace.CurrentCamera, workspace.Ignore }
+		local PlayerRay = Ray.new(Origin, HeadPos - Origin)
+		local Hit = workspace:FindPartOnRayWithIgnoreList(PlayerRay, IgnoreList)
+
+		local function Create()
+			if (OnScreen) then
+				local Name = ""
+				local Health = ""
+				local Distance = ""
+
+				if (client.esp.Options.Name) then
+					Name = Player.Name
+				end
+
+				if (client.esp.Options.Health) then
+					local Characters = debug.getupvalue(client.replication.getplayerhit, 1)
+					Health = " [ " .. client.hud:getplayerhealth(Characters[Character]) .. "% ]"
+				end
+
+				if (client.esp.Options.Distance) then
+					Distance = " [ " .. math.round((HeadPosition - workspace.CurrentCamera.CFrame.p).Magnitude) .. " studs ]"
+				end
+
+				Objects.Name.Visible = true
+				Objects.Name.Transparency = 1
+				Objects.Name.Text = string.format("%s%s%s", Name, Health, Distance)
+				Objects.Name.Size = 18
+				Objects.Name.Center = true
+				Objects.Name.Outline = true
+				Objects.Name.OutlineColor = Color3.fromRGB(0, 0, 0)
+				Objects.Name.Position = Vector2.new(Head2dPosition.X, Head2dPosition.Y)
+
+				if (client.esp.Options.TeamColor) then
+					Objects.Name.Color = Player.Team.TeamColor.Color
+				else
+					Objects.Name.Color = Color3.fromRGB(255, 255, 255)
+				end
+
+				if (client.esp.Options.Box) then
+					local Part = Character.HumanoidRootPart
+					local Size = Part.Size * Vector3.new(1, 1.5)
+					local Sizes = {
+						TopRight = (Part.CFrame * CFrame.new(-Size.X, -Size.Y, 0)).Position,
+						BottomRight = (Part.CFrame * CFrame.new(-Size.X, Size.Y, 0)).Position,
+						TopLeft = (Part.CFrame * CFrame.new(Size.X, -Size.Y, 0)).Position,
+						BottomLeft = (Part.CFrame * CFrame.new(Size.X, Size.Y, 0)).Position,
+					}
+
+					local TL, OnScreenTL = workspace.CurrentCamera:WorldToScreenPoint(Sizes.TopLeft)
+					local TR, OnScreenTR = workspace.CurrentCamera:WorldToScreenPoint(Sizes.TopRight)
+					local BL, OnScreenBL = workspace.CurrentCamera:WorldToScreenPoint(Sizes.BottomLeft)
+					local BR, OnScreenBR = workspace.CurrentCamera:WorldToScreenPoint(Sizes.BottomRight)
+
+					if (OnScreenTL and OnScreenTR and OnScreenBL and OnScreenBR) then
+						Objects.Box.Visible = true
+						Objects.Box.Transparency = 1
+						Objects.Box.Thickness = 2
+						Objects.Box.Filled = false
+						Objects.Box.PointA = Vector2.new(TL.X, TL.Y + 36)
+						Objects.Box.PointB = Vector2.new(TR.X, TR.Y + 36)
+						Objects.Box.PointC = Vector2.new(BR.X, BR.Y + 36)
+						Objects.Box.PointD = Vector2.new(BL.X, BL.Y + 36)
+
+						if (client.esp.Options.TeamColor) then
+							Objects.Box.Color = Player.Team.TeamColor.Color
+						else
+							Objects.Box.Color = client.esp.Options.Color
+						end
+					end
+				end
+
+				if (client.esp.Options.Tracer) then
+					local CharTorso = Character:FindFirstChild("Torso") or Character:FindFirstChild("UpperTorso")
+					local Torso, OnScreen = workspace.CurrentCamera:WorldToScreenPoint(CharTorso.Position)
+
+					if (OnScreen) then
+						Objects.Tracer.Visible = true
+						Objects.Tracer.Transparency = 1
+						Objects.Tracer.Thickness = 2
+						Objects.Tracer.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 2)
+						Objects.Tracer.To = Vector2.new(Torso.X, Torso.Y + 36)
+
+						if (client.esp.Options.TeamColor) then
+							Objects.Tracer.Color = Player.Team.TeamColor.Color
+						else
+							Objects.Tracer.Color = client.esp.Options.Color
+						end
+					end
+				end
+			end
+		end
+
+		if (client.esp.Options.VisibleOnly) then
+			if (Hit == nil) then
+				Create()
+			end
+		else
+			Create()
+		end
+
+		client.esp.Services.RunService.Heartbeat:Wait()
+		client.esp.Services.RunService.Heartbeat:Wait()
+
+		Objects.Name:Remove()
+		Objects.Box:Remove()
+		Objects.Tracer:Remove()
+	end
+
+	client.esp.Services.RunService.RenderStepped:Connect(function()
+		local LocalPlayer = client.esp.Services.Players.LocalPlayer
+
+		for i,v in pairs(client.esp.Services.Players:GetPlayers()) do
+			if (v and client.chartable[v] and v.Name ~= LocalPlayer.Name) then
+				if (client.esp.Options.Enable) then
+					if (client.esp.Options.TeamCheck) then
+						if (v.Team ~= LocalPlayer.Team) then
+							CreateEsp(v)
+						end
+					else
+						CreateEsp(v)
+					end
+				end
+			end
+		end
+	end)
+end)
+
+HelpTab.Name = "HelpTab"
+HelpTab.Parent = MainFrame
+HelpTab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+HelpTab.BackgroundTransparency = 1.000
+HelpTab.Position = UDim2.new(0.298850566, 0, 0.218009472, 0)
+HelpTab.Size = UDim2.new(0, 244, 0, 138)
+
+HelpText.Name = "HelpText"
+HelpText.Parent = HelpTab
+HelpText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+HelpText.Position = UDim2.new(0.114754081, 0, 0.173913047, 0)
+HelpText.Size = UDim2.new(0, 200, 0, 96)
+HelpText.Font = Enum.Font.Roboto
+HelpText.Text = "Right Shift to toggle gui."
+HelpText.TextColor3 = Color3.fromRGB(0, 0, 0)
+HelpText.TextSize = 14.000
+
+HelpText2.Name = "HelpText2"
+HelpText2.Parent = HelpTab
+HelpText2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+HelpText2.BorderColor3 = Color3.fromRGB(255, 255, 255)
+HelpText2.Position = UDim2.new(0.143442616, 0, 0.608695626, 0)
+HelpText2.Size = UDim2.new(0, 186, 0, 13)
+HelpText2.Font = Enum.Font.Roboto
+HelpText2.Text = "Add disc if anything else."
+HelpText2.TextColor3 = Color3.fromRGB(0, 0, 0)
+HelpText2.TextSize = 14.000
+
+-- Scripts:
+
+local function RZBNV_fake_script() -- SilentAim.LocalScript 
+	local script = Instance.new('LocalScript', SilentAim)
+
+	script.Parent.MouseButton1Down:connect(function()
+		script.Parent.Parent.SilentAimTab.Visible = true
+		script.Parent.Parent.EspTab.Visible = false
+		script.Parent.Parent.HelpTab.Visible = false
+	end)
+	
+end
+coroutine.wrap(RZBNV_fake_script)()
+local function DZOC_fake_script() -- Esp.LocalScript 
+	local script = Instance.new('LocalScript', Esp)
+
+	script.Parent.MouseButton1Down:connect(function()
+		script.Parent.Parent.SilentAimTab.Visible = false
+		script.Parent.Parent.EspTab.Visible = true
+		script.Parent.Parent.HelpTab.Visible = false
+	end)
+end
+coroutine.wrap(DZOC_fake_script)()
+local function XSUPDUD_fake_script() -- Help.LocalScript 
+	local script = Instance.new('LocalScript', Help)
+
+	script.Parent.MouseButton1Down:connect(function()
+		script.Parent.Parent.SilentAimTab.Visible = false
+		script.Parent.Parent.EspTab.Visible = false
+		script.Parent.Parent.HelpTab.Visible = true
+	end)
+end
+coroutine.wrap(XSUPDUD_fake_script)()
+local function OEBNH_fake_script() -- MainFrame.LocalScript 
+	local script = Instance.new('LocalScript', MainFrame)
+
+	local frame = script.Parent 
+	local mouse = game:GetService('Players').LocalPlayer:GetMouse();
+	local ui = game:GetService("UserInputService")
+	ui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.Keyboard then
+			if input.KeyCode == Enum.KeyCode.RightShift then
+				frame.Visible = not frame.Visible 
+			end
+		end
+	
+	end)
+	
+end
+coroutine.wrap(OEBNH_fake_script)()
